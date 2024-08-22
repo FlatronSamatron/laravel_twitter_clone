@@ -9,7 +9,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $ideas = Idea::orderBy('created_at', 'desc');
+        $ideas = Idea::orderBy('created_at', 'desc')->with('comments');
 
         if($request->has('search')){
             $search = $request->get('search', '');
