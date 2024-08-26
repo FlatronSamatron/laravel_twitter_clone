@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Idea;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $ideas = Idea::orderBy('created_at', 'desc')->with('comments');
+        $ideas = Idea::orderBy('created_at', 'desc');
 
         if($request->has('search')){
             $search = $request->get('search', '');

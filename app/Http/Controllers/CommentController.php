@@ -16,6 +16,7 @@ class CommentController extends Controller
         ]);
 
         $data['idea_id'] = $idea->id;
+        $data['user_id'] = auth()->id();
 
         Comment::create($data);
 

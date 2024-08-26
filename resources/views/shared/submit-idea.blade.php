@@ -1,3 +1,4 @@
+@auth()
 <h4> Share yours ideas </h4>
 <div class="row">
     @include('shared.success-message')
@@ -17,3 +18,8 @@
         </div>
     </form>
 </div>
+<hr>
+@endauth
+@guest()
+    <h4>Login to share yours ideas</h4>
+@endguest

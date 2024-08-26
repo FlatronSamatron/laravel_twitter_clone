@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
 
 return new class extends Migration
 {
@@ -12,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ideas', function (Blueprint $table) {
-            $table->id();
-            $table->string('content');
-            $table->unsignedInteger('likes')->default(0);
-            $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('bio')->nullable();
+            $table->string('image')->nullable();
         });
     }
 
@@ -26,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ideas');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('bio');
+            $table->dropColumn('image');
+        });
     }
 };

@@ -10,13 +10,22 @@
   - [CommentController.php](app%2FHttp%2FControllers%2FCommentController.php)
   - [DashboardController.php](app%2FHttp%2FControllers%2FDashboardController.php)
   - [IdeaController.php](app%2FHttp%2FControllers%2FIdeaController.php)
+  - [AuthController.php](app%2FHttp%2FControllers%2FAuthController.php)
+  - [UserController.php](app%2FHttp%2FControllers%2FUserController.php)
+  - [UserController.php](app%2FHttp%2FControllers%2FUserController.php)
 - Models:
   - [Idea.php](app%2FModels%2FIdea.php)
   - [Comment.php](app%2FModels%2FComment.php)
   - [User.php](app%2FModels%2FUser.php)
-- Requests:
-  - asf
+- Mail => `php artisan make:mail WelcomeEmail`:
+  - [WelcomeEmail.php](app%2FMail%2FWelcomeEmail.php)
+
 - Views:
+  - components:
+    - [input.blade.php](resources%2Fviews%2Fcomponents%2Finput.blade.php)
+  - auth:
+    - [login.blade.php](resources%2Fviews%2Fauth%2Flogin.blade.php)
+    - [register.blade.php](resources%2Fviews%2Fauth%2Fregister.blade.php)
   - ideas:
     - [edit.blade.php](resources%2Fviews%2Fideas%2Fedit.blade.php)
     - [show.blade.php](resources%2Fviews%2Fideas%2Fshow.blade.php)
@@ -30,24 +39,41 @@
     - [search-bar.blade.php](resources%2Fviews%2Fshared%2Fsearch-bar.blade.php)
     - [submit-idea.blade.php](resources%2Fviews%2Fshared%2Fsubmit-idea.blade.php)
     - [success-message.blade.php](resources%2Fviews%2Fshared%2Fsuccess-message.blade.php)
+    - [user-edit-card.blade.php](resources%2Fviews%2Fshared%2Fuser-edit-card.blade.php)
+    - [user-card.blade.php](resources%2Fviews%2Fshared%2Fuser-card.blade.php)
   - layouts:
     - [layout.blade.php](resources%2Fviews%2Flayouts%2Flayout.blade.php)
     - [nav.blade.php](resources%2Fviews%2Flayouts%2Fnav.blade.php)
+  - users:
+    - [show.blade.php](resources%2Fviews%2Fusers%2Fshow.blade.php)
+    - [edit.blade.php](resources%2Fviews%2Fusers%2Fedit.blade.php)
+  - emails:
+    - [welcome-email.blade.php](resources%2Fviews%2Femails%2Fwelcome-email.blade.php)
   - [dashboard.blade.php](resources%2Fviews%2Fdashboard.blade.php)
   - [profile.blade.php](resources%2Fviews%2Fprofile.blade.php)
 
 ## migrations:
 - [2024_08_22_085116_create_ideas_table.php](database%2Fmigrations%2F2024_08_22_085116_create_ideas_table.php)
 - [2024_08_22_165533_create_comments_table.php](database%2Fmigrations%2F2024_08_22_165533_create_comments_table.php)
+- [2024_08_24_123619_add_bio_and_image_to_users.php](database%2Fmigrations%2F2024_08_24_123619_add_bio_and_image_to_users.php)
+- [2024_08_24_162657_create_follower_user_table.php](database%2Fmigrations%2F2024_08_24_162657_create_follower_user_table.php)
+- [2024_08_24_162657_create_follower_user_table.php](database%2Fmigrations%2F2024_08_24_162657_create_follower_user_table.php)
 
 ## tables:
 - ideas:
   - content (string)
   - likes (unsignedInteger)
+  - user_id
 - comments:
   - idea_id
+  - user_id
   - content
+- follower_user:
+  - user_id
+  - follower_id
 
 ## features:
 - [AppServiceProvider.php](app%2FProviders%2FAppServiceProvider.php):
   - Paginator::useBootstrapFive() => use bootstrap-5 for links()
+- Added new route file [auth.php](routes%2Fauth.php) and updated [RouteServiceProvider.php](app%2FProviders%2FRouteServiceProvider.php) => group(base_path('routes/auth.php'));
+- mailtrap used for mail send(env setting) => Mail::to($user->email)->send(new WelcomeEmail($user))
