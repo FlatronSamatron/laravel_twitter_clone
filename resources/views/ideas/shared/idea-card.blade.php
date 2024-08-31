@@ -8,7 +8,7 @@
                     <h5 class="card-title mb-0"><a href="{{route('users.show', $idea->user->id)}}">{{$idea->user->name}}</a></h5>
                 </div>
             </div>
-            @if(auth()->id() === $idea->user->id)
+            @can('update', $idea)
                 <div>
                     <form action="{{route('ideas.destroy', $idea->id)}}" method="post">
                         @csrf
@@ -20,7 +20,7 @@
                         <button class="btn btn-danger btn-sm">X</button>
                     </form>
                 </div>
-            @endif
+            @endcan
         </div>
     </div>
     <div class="card-body">
@@ -46,10 +46,12 @@
         @endif
         <div class="d-flex justify-content-between">
             <div>
-                <a href="#" class="fw-light nav-link fs-6"> <span class="fas fa-heart me-1"></span>{{$idea->likes}}</a>
+                @include('ideas.shared.like-button')
             </div>
             <div>
-                <span class="fs-6 fw-light text-muted"> <span class="fas fa-clock"> </span> {{$idea->created_at}}</span>
+                <span class="fs-6 fw-light text-muted">
+                    <span class="fas fa-clock"> </span>
+                    {{$idea->created_at->diffForHumans()}}</span>
             </div>
         </div>
         @include('shared.comments-box')

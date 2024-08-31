@@ -3,6 +3,7 @@
         <ul class="nav nav-link-secondary flex-column fw-bold gap-2">
             <li class="nav-item">
                 <a class="nav-link @if(Route::is('dashboard')) text-white bg-primary rounded @endif" href="{{route('dashboard')}}"><span>Home</span></a>
+                <a class="nav-link @if(Route::is('feed')) text-white bg-primary rounded @endif" href="{{route('feed')}}"><span>Feed</span></a>
             </li>
         </ul>
     </div>

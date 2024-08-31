@@ -7,18 +7,23 @@
 
 ## app map:
 - Controllers => `php artisan make:controller`:
+  - Admin:
+    - [AdminDashboardController.php](app%2FHttp%2FControllers%2FAdmin%2FAdminDashboardController.php)
   - [CommentController.php](app%2FHttp%2FControllers%2FCommentController.php)
   - [DashboardController.php](app%2FHttp%2FControllers%2FDashboardController.php)
   - [IdeaController.php](app%2FHttp%2FControllers%2FIdeaController.php)
   - [AuthController.php](app%2FHttp%2FControllers%2FAuthController.php)
   - [UserController.php](app%2FHttp%2FControllers%2FUserController.php)
   - [UserController.php](app%2FHttp%2FControllers%2FUserController.php)
+  - [FeedController.php](app%2FHttp%2FControllers%2FFeedController.php)
 - Models:
   - [Idea.php](app%2FModels%2FIdea.php)
   - [Comment.php](app%2FModels%2FComment.php)
   - [User.php](app%2FModels%2FUser.php)
 - Mail => `php artisan make:mail WelcomeEmail`:
   - [WelcomeEmail.php](app%2FMail%2FWelcomeEmail.php)
+
+  
 
 - Views:
   - components:
@@ -58,11 +63,13 @@
 - [2024_08_24_123619_add_bio_and_image_to_users.php](database%2Fmigrations%2F2024_08_24_123619_add_bio_and_image_to_users.php)
 - [2024_08_24_162657_create_follower_user_table.php](database%2Fmigrations%2F2024_08_24_162657_create_follower_user_table.php)
 - [2024_08_24_162657_create_follower_user_table.php](database%2Fmigrations%2F2024_08_24_162657_create_follower_user_table.php)
+- [2024_08_26_084529_remove_likes_from_ideas_table.php](database%2Fmigrations%2F2024_08_26_084529_remove_likes_from_ideas_table.php)
+- [2024_08_28_082018_add_is_admin_to_users_table.php](database%2Fmigrations%2F2024_08_28_082018_add_is_admin_to_users_table.php)
 
 ## tables:
 - ideas:
   - content (string)
-  - likes (unsignedInteger)
+  - likes (unsignedInteger) -> deleted
   - user_id
 - comments:
   - idea_id
@@ -70,10 +77,31 @@
   - content
 - follower_user:
   - user_id
-  - follower_id
+  - follower_id -> user_id
+- idea_like:
+  - idea_id
+  - user_id
 
 ## features:
 - [AppServiceProvider.php](app%2FProviders%2FAppServiceProvider.php):
   - Paginator::useBootstrapFive() => use bootstrap-5 for links()
 - Added new route file [auth.php](routes%2Fauth.php) and updated [RouteServiceProvider.php](app%2FProviders%2FRouteServiceProvider.php) => group(base_path('routes/auth.php'));
 - mailtrap used for mail send(env setting) => Mail::to($user->email)->send(new WelcomeEmail($user))
+- `php artisan tinker`:
+  - $u = User::where('name', 'Admin')->first()  
+  - $u->is_admin = 1
+  - $u->save()
+
+## Permissions:
+- Gate:
+  - [AuthServiceProvider.php](app%2FProviders%2FAuthServiceProvider.php) => boot:
+    - controller => $this->authorize('admin')
+    - route => middleware('can:admin')
+    - blade => @can('admin')
+
+- middleware:
+  - `php artisan make:middleware EnsureUserIsAdmin` => [EnsureUserIsAdmin.php](app%2FHttp%2FMiddleware%2FEnsureUserIsAdmin.php)
+  - [Kernel.php](app%2FHttp%2FKernel.php) => `'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class`
+  - 
+- Policies => php artisan make:policy IdeaPolicy --model=idea:
+  - [IdeaPolicy.php](app%2FPolicies%2FIdeaPolicy.php)

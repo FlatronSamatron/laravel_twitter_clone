@@ -25,7 +25,8 @@ class User extends Authenticatable
         'email',
         'password',
         'bio',
-        'image'
+        'image',
+        'is_admin'
     ];
 
     /**
@@ -57,14 +58,21 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class)->latest();
     }
 
-    public function followings(): BelongsToMany
+
+
+    public function likes(): BelongsToMany
     {
-        return $this->BelongsToMany(User::class, 'follower_user', 'follower_id', 'user_id')->withTimestamps();
+        return $this->belongsToMany(Idea::class, 'idea_like')->withTimestamps();
     }
 
     public function followers(): BelongsToMany
     {
         return $this->BelongsToMany(User::class, 'follower_user', 'user_id', 'follower_id');
+    }
+
+    public function followings(): BelongsToMany
+    {
+        return $this->BelongsToMany(User::class, 'follower_user', 'follower_id', 'user_id')->withTimestamps();
     }
 
     public function getImageUrl()
@@ -76,4 +84,12 @@ class User extends Authenticatable
     {
         return $user->followers->pluck('id')->contains(auth()->id());
     }
+
+    public function isLiked(Idea $idea)
+    {
+        return $this->likes()->where('idea_id', $idea->id)->exists();
+    }
+
+
+
 }

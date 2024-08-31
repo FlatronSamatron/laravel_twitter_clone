@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function show(User $user): View
     {
-        $ideas = $user->ideas()->with(['comments:user'])->paginate(5);
+        $ideas = $user->ideas()->paginate(5);
         return view('users.show', compact('user', 'ideas'));
     }
 

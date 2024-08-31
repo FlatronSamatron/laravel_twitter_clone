@@ -1,10 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\IdeaController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::prefix('ideas/')->name('ideas.')->controller(IdeaController::class)->group(function () {
+Route::prefix('ideas/')->name('ideas.')->controller(IdeaController::class)->
+group(function () {
     Route::get('/{idea}', 'show')->name('show');
     Route::middleware('auth')->group(function () {
         Route::get('/{idea}/edit', 'edit')->name('edit');
@@ -33,10 +35,22 @@ Route::prefix('ideas/')->name('ideas.')->controller(IdeaController::class)->grou
 
 Route::post('/ideas/{idea}/comments', [CommentController::class, 'store'])->name('ideas.comments.create')->middleware('auth');
 
-Route::resource('users', UserController::class)->only('show', 'edit', 'update')->middleware('auth');
+Route::resource('users', UserController::class)->only('edit', 'update')->middleware('auth');
+Route::resource('users', UserController::class)->only('show');
 
-Route::post('/users/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
-Route::post('/users/{user}/unfollow', [UserController::class, 'unfollow'])->name('users.unfollow');
+Route::middleware('auth')->group(function (){
+    Route::post('/users/{user}/follow', [UserController::class, 'follow'])->name('users.follow');
+    Route::post('/users/{user}/unfollow', [UserController::class, 'unfollow'])->name('users.unfollow');
+
+    Route::post('/ideas/{idea}/like', [IdeaController::class, 'like'])->name('ideas.like');
+    Route::post('/ideas/{idea}/unlike', [IdeaController::class, 'unlike'])->name('ideas.unlike');
+
+    Route::get('/feed', FeedController::class)->name('feed');
+});
+
+Route::get('/admin', [AdminDashboardController::class, 'index'])
+        ->name('admin.dashboard')
+        ->middleware('auth', 'can:admin');
 
 
 

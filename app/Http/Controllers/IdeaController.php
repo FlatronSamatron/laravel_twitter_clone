@@ -30,12 +30,15 @@ class IdeaController extends Controller
 
     public function edit(Idea $idea): View
     {
+//        $this->authorize('idea.edit', $idea); // gate
+        $this->authorize('update', $idea);
         $editing = true;
         return view('ideas.show', compact('idea', 'editing'));
     }
 
     public function update(Request $request,Idea $idea): RedirectResponse
     {
+        $this->authorize('update', $idea);
         $data = ($request->validate([
                 'content' => 'required|string'
         ]));
@@ -47,8 +50,27 @@ class IdeaController extends Controller
 
     public function destroy(Idea $idea): RedirectResponse
     {
+//        $this->authorize('idea.delete', $idea); // gate
+        $this->authorize('delete', $idea);
+        $this->authorize('', $idea);
         $idea->delete();
 
         return redirect()->route('dashboard')->with('success', 'Idea was deleted successfully');
+    }
+
+    public function like(Idea $idea): RedirectResponse
+    {
+        $user = auth()->id();
+        $idea->likes()->attach($user);
+
+        return redirect()->back();
+    }
+
+    public function unlike(Idea $idea): RedirectResponse
+    {
+        $user = auth()->id();
+        $idea->likes()->detach($user);
+
+        return redirect()->back();
     }
 }
