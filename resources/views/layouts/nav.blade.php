@@ -17,6 +17,11 @@
                 </li>
                 @endguest
                 @auth()
+                    @can('admin')
+                        <li class="nav-item">
+                            <a class="nav-link @if(Route::is('admin.dashboard')) active @endif" href="{{route('admin.dashboard')}}">Admin page</a>
+                        </li>
+                    @endcan
                     <li class="nav-item">
                         <a class="nav-link @if(Route::is('users.show')) active @endif" href="{{route('users.show', Auth::user()->id)}}">{{Auth::user()->name}}</a>
                     </li>

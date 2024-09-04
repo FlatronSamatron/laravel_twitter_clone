@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AdminIdeaController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
@@ -54,9 +56,13 @@ Route::middleware('auth')->group(function (){
     Route::get('/feed', FeedController::class)->name('feed');
 });
 
-Route::get('/admin', [AdminDashboardController::class, 'index'])
-        ->name('admin.dashboard')
-        ->middleware('auth', 'can:admin');
+
+Route::middleware(['auth', 'can:admin'])->prefix('/admin')->as('admin.')->group(function (){
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::resource('users', AdminUserController::class)->only('index');
+    Route::resource('ideas', AdminIdeaController::class)->only('index');
+});
+
 
 
 
