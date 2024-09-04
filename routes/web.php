@@ -22,6 +22,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
+Route::get('/lang/{lang}', function ($lang){
+    app()->setLocale($lang);
+    session()->put('locale', $lang);
+    return redirect()->back();
+})->name('lang');
+
 Route::prefix('ideas/')->name('ideas.')->controller(IdeaController::class)->
 group(function () {
     Route::get('/{idea}', 'show')->name('show');

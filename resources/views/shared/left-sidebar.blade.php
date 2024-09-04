@@ -8,6 +8,8 @@
         </ul>
     </div>
     <div class="card-footer text-center py-2">
-        <a class="btn btn-link btn-sm" href="{{route('users.show', auth()->user()->id ?? '')}}">View Profile </a>
+        <a class="btn btn-link btn-sm" href="{{route('lang', 'en')}}">En </a>
+        <a class="btn btn-link btn-sm" href="{{route('lang', 'es')}}">Es </a>
+        <a class="btn btn-link btn-sm" href="{{route('lang', 'fr')}}">Fr </a>
     </div>
 </div>

@@ -85,12 +85,18 @@
 ## features:
 - [AppServiceProvider.php](app%2FProviders%2FAppServiceProvider.php):
   - Paginator::useBootstrapFive() => use bootstrap-5 for links()
+  - app()->setLocale('es') => change locale language;
 - Added new route file [auth.php](routes%2Fauth.php) and updated [RouteServiceProvider.php](app%2FProviders%2FRouteServiceProvider.php) => group(base_path('routes/auth.php'));
 - mailtrap used for mail send(env setting) => Mail::to($user->email)->send(new WelcomeEmail($user))
 - `php artisan tinker`:
   - $u = User::where('name', 'Admin')->first()  
   - $u->is_admin = 1
   - $u->save()
+- ` $data['password'] = Hash::make($data['password']);` => $casts = ['password' => 'hashed']
+- `php artisan lang:publish`
+- global blade variable => [AppServiceProvider.php](app%2FProviders%2FAppServiceProvider.php) => View::share()
+- [Idea.php](app%2FModels%2FIdea.php) => scopeSearch => `$ideas->search($request->get('search', ''))`
+
 
 ## Permissions:
 - Gate:
@@ -102,6 +108,8 @@
 - middleware:
   - `php artisan make:middleware EnsureUserIsAdmin` => [EnsureUserIsAdmin.php](app%2FHttp%2FMiddleware%2FEnsureUserIsAdmin.php)
   - [Kernel.php](app%2FHttp%2FKernel.php) => `'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class`
-  - 
+  - php artisan make:middleware SetLocale => [SetLocale.php](app%2FHttp%2FMiddleware%2FSetLocale.php)
+  - $middlewareGroups => 'web' =>  \App\Http\Middleware\SetLocale::class
 - Policies => php artisan make:policy IdeaPolicy --model=idea:
-  - [IdeaPolicy.php](app%2FPolicies%2FIdeaPolicy.php)
+  - [IdeaPolicy.php](app%2FPolicies%2FIdeaPolicy.php) => `$this->authorize('update', $user)` => `$this->authorize('update', $idea)`
+  - [UserPolicy.php](app%2FPolicies%2FUserPolicy.php) => `$this->authorize('update', $user)`

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,7 @@ class UserController extends Controller
      */
     public function edit(User $user): View
     {
+        $this->authorize('update', $user);
         $ideas = $user->ideas()->paginate(5);
         return view('users.edit', compact('user', 'ideas'));
     }
@@ -33,13 +35,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $data = $request->validate([
-                'name'  => 'string',
-                'image' => 'nullable|image',
-                'bio'   => 'nullable|string',
-        ]);
+        $data = $request->validated();
 
         if(request('image')){
             $imagePath = $request->file('image')->store('profile', 'public');

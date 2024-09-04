@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateIdeaRequest;
+use App\Http\Requests\UpdateIdeaRequest;
 use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -10,11 +12,9 @@ use Illuminate\View\View;
 
 class IdeaController extends Controller
 {
-    public function store(Request $request): RedirectResponse
+    public function store(CreateIdeaRequest $request): RedirectResponse
     {
-        $data = ($request->validate([
-                'content' => 'required|string'
-        ]));
+        $data = $request->validated();
 
         $data['user_id'] = auth()->id();
 
@@ -36,12 +36,10 @@ class IdeaController extends Controller
         return view('ideas.show', compact('idea', 'editing'));
     }
 
-    public function update(Request $request,Idea $idea): RedirectResponse
+    public function update(UpdateIdeaRequest $request,Idea $idea): RedirectResponse
     {
         $this->authorize('update', $idea);
-        $data = ($request->validate([
-                'content' => 'required|string'
-        ]));
+        $data = $request->validated();
 
         $idea->update($data);
 
@@ -52,7 +50,6 @@ class IdeaController extends Controller
     {
 //        $this->authorize('idea.delete', $idea); // gate
         $this->authorize('delete', $idea);
-        $this->authorize('', $idea);
         $idea->delete();
 
         return redirect()->route('dashboard')->with('success', 'Idea was deleted successfully');

@@ -1,4 +1,5 @@
 @extends('layouts.layout')
+@section('title', 'View User')
 
 @section('content')
     <div class="row">
